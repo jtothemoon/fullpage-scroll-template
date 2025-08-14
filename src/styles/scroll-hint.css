@@ -1,0 +1,24 @@
+.scroll-hint {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Desktop - 중앙 하단 */
+@media (min-width: 768px) {
+  .scroll-hint {
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile - dot navigator 위에 */
+@media (max-width: 767px) {
+  .scroll-hint {
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
