@@ -8,13 +8,11 @@ import { Header } from '@/components/header'
 
 export default function Home() {
   return (
-    <>
+    <FullPageScroll>
       <Header />
-      <FullPageScroll>
-        <HeroSection />
-        <AboutSection />
-        <ContactSection />
-      </FullPageScroll>
-    </>
+      <HeroSection />
+      <AboutSection />
+      <ContactSection />
+    </FullPageScroll>
   )
 }

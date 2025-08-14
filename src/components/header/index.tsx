@@ -9,10 +9,22 @@ import { Menu } from 'lucide-react'
 import ThemeToggler from '@/components/header/ThemeToggler'
 import LanguageToggler from '@/components/header/LanguageToggler'
 import { useLanguage } from '@/components/contexts'
+import { useScrollToTop } from '@/components/contexts/ScrollToTopContext'
+import { useRouter, usePathname } from 'next/navigation'
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useLanguage()
+  const router = useRouter()
+  const pathname = usePathname()
+  
+  let scrollToTop: (() => void) | null = null
+  try {
+    const context = useScrollToTop()
+    scrollToTop = context.scrollToTop
+  } catch {
+    // ScrollToTopProvider가 없는 페이지에서는 null
+  }
 
   const navItems = [
     { name: t('nav.home'), href: '/' },
@@ -27,9 +39,18 @@ export function Header() {
         <div className="flex justify-between items-center h-14 sm:h-16 md:grid md:grid-cols-3">
           {/* Logo */}
           <div className="flex justify-start">
-            <Link href="/" className="text-lg sm:text-xl font-bold">
+            <button 
+              onClick={() => {
+                if (pathname === '/' && scrollToTop) {
+                  scrollToTop()
+                } else {
+                  router.push('/')
+                }
+              }}
+              className="text-lg sm:text-xl font-bold hover:opacity-70 transition-opacity"
+            >
               {t('common.logo')}
-            </Link>
+            </button>
           </div>
 
           {/* Center Navigation - Desktop */}

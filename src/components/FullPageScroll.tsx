@@ -1,11 +1,13 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import ScrollHint from './ScrollHint'
 import DotNavigation from './DotNavigation'
+import { ScrollToTopProvider } from './contexts/ScrollToTopContext'
 
-export function FullPageScroll({ children }: { children: React.ReactNode[] }) {
+export function FullPageScroll({ children }: { children: React.ReactNode }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ 
     axis: 'y', 
     loop: true,
@@ -29,6 +31,16 @@ export function FullPageScroll({ children }: { children: React.ReactNode[] }) {
       emblaApi.off('select', onSelect)
     }
   }, [emblaApi])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentSlide === 0) {
+        setShowScrollHint(true)
+      }
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [currentSlide])
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -68,11 +80,22 @@ export function FullPageScroll({ children }: { children: React.ReactNode[] }) {
     }
   }
 
+  const handleScrollToTop = () => {
+    if (emblaApi) {
+      emblaApi.scrollTo(0)
+      setShowScrollHint(false)
+    }
+  }
+
+  const childrenArray = React.Children.toArray(children)
+  const [headerComponent, ...scrollSections] = childrenArray
+
   return (
-    <>
+    <ScrollToTopProvider onScrollToTop={handleScrollToTop}>
+      {headerComponent}
       <div className="h-dvh overflow-hidden touch-pan-y" ref={emblaRef}>
         <div className="flex flex-col h-full">
-          {children.map((child, index) => (
+          {scrollSections.map((child, index) => (
             <div key={index} className="flex-none h-dvh w-full">
               {child}
             </div>
@@ -82,10 +105,10 @@ export function FullPageScroll({ children }: { children: React.ReactNode[] }) {
       
       <ScrollHint isVisible={showScrollHint} />
       <DotNavigation 
-        totalSlides={children.length}
+        totalSlides={scrollSections.length}
         currentSlide={currentSlide}
         onSlideClick={handleDotClick}
       />
-    </>
+    </ScrollToTopProvider>
   )
 }
