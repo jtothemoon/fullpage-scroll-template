@@ -82,8 +82,13 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
 
   const handleScrollToTop = () => {
     if (emblaApi) {
+      const currentIndex = emblaApi.selectedScrollSnap()
       emblaApi.scrollTo(0)
-      setShowScrollHint(false)
+      
+      // 이미 첫 번째 섹션에 있었다면 스크롤 힌트를 숨기지 않음
+      if (currentIndex !== 0) {
+        setShowScrollHint(false)
+      }
     }
   }
 
