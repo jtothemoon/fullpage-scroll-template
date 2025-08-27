@@ -129,13 +129,38 @@
   }
   
   .header-backdrop {
-    background-color: hsl(var(--background) / 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid hsl(var(--border) / 0.5);
   }
   
   .header-relative {
     @apply relative;
+  }
+  
+  /* 테마별 헤더 색상 */
+  .theme-hero {
+    background-color: transparent !important;
+    transition: background-color 0.3s ease;
+  }
+  
+  .theme-hero:hover {
+    background-color: hsl(var(--background) / 0.8) !important;
+  }
+  
+  .theme-about {
+    background-color: hsl(var(--muted)) !important;
+    border-bottom-color: hsl(var(--muted-foreground) / 0.3) !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+  
+  .theme-contact {
+    background-color: hsl(var(--primary)) !important;
+    border-bottom-color: hsl(var(--primary) / 0.5) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+  
+  .theme-contact * {
+    color: hsl(var(--primary-foreground)) !important;
   }
   
   /* Body overflow 관리 */

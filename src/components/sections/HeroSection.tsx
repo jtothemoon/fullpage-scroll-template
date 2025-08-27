@@ -14,7 +14,7 @@ export function HeroSection() {
         <p className="text-sm sm:text-base mb-8 text-muted-foreground">
           {t('hero.subtitle')}
         </p>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded">
+        <button className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
           {t('hero.cta')}
         </button>
       </div>

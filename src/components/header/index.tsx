@@ -10,6 +10,7 @@ import ThemeToggler from '@/components/header/ThemeToggler'
 import LanguageToggler from '@/components/header/LanguageToggler'
 import { useLanguage } from '@/components/contexts'
 import { useScrollToTop } from '@/components/contexts/ScrollToTopContext'
+import { useHeaderTheme } from '@/components/contexts/HeaderThemeContext'
 import { useRouter, usePathname } from 'next/navigation'
 
 export function Header() {
@@ -17,6 +18,15 @@ export function Header() {
   const { t } = useLanguage()
   const router = useRouter()
   const pathname = usePathname()
+  
+  // 헤더 테마 사용 (메인 페이지에서만 작동)
+  let currentTheme = 'default'
+  try {
+    const themeContext = useHeaderTheme()
+    currentTheme = themeContext.currentTheme
+  } catch {
+    // HeaderThemeProvider가 없는 페이지에서는 기본값 사용
+  }
   
   let scrollToTop: (() => void) | null = null
   try {
