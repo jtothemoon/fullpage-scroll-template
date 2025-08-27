@@ -34,7 +34,7 @@ export function Header() {
   ]
 
   return (
-    <header className="relative z-50 w-full bg-background">
+    <header className="w-full bg-background transition-all duration-300 ease-in-out">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16 md:grid md:grid-cols-3">
           {/* Logo */}

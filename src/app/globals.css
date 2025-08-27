@@ -122,6 +122,31 @@
     @apply bg-background text-foreground;
   }
   
+  /* 헤더 스타일 관리 */
+  .header-fixed {
+    @apply fixed top-0 left-0 right-0 z-50;
+    will-change: transform;
+  }
+  
+  .header-backdrop {
+    background-color: hsl(var(--background) / 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  .header-relative {
+    @apply relative;
+  }
+  
+  /* Body overflow 관리 */
+  .body-overflow-hidden {
+    overflow: hidden;
+  }
+  
+  .body-overflow-auto {
+    overflow: auto;
+  }
+  
   /* Sticky 헤더(64px)로 인한 스크롤 오프셋 처리 */
   :target,
   .scroll-target,
