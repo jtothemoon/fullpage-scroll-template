@@ -61,9 +61,13 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
         
         scrollAccumulator.current = 0
         
+        // 아이패드 트랙패드 감지: 매우 작은 deltaY 값들
+        const isIPadTrackpad = Math.abs(e.deltaY) < 10
+        const waitTime = isIPadTrackpad ? 1200 : 800
+        
         setTimeout(() => {
           isScrolling.current = false
-        }, 800)
+        }, waitTime)
       }
     }
 
