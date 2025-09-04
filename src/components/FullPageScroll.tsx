@@ -16,6 +16,8 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
   const [showScrollHint, setShowScrollHint] = useState(true)
   const isScrolling = useRef(false)
   const scrollAccumulator = useRef(0)
+  const lastWheelTime = useRef(0)
+  const wheelTimeout = useRef<NodeJS.Timeout | null>(null)
   const threshold = 70
 
   useEffect(() => {
@@ -48,6 +50,24 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       
       if (isScrolling.current || !emblaApi) return
       
+      const now = Date.now()
+      const timeDelta = now - lastWheelTime.current
+      
+      // 기존 timeout 정리
+      if (wheelTimeout.current) {
+        clearTimeout(wheelTimeout.current)
+      }
+      
+      // 아이패드 트랙패드 관성 스크롤 감지
+      const isIPadTrackpad = Math.abs(e.deltaY) < 10
+      const isInertialScroll = isIPadTrackpad && timeDelta > 100
+      
+      // 관성 스크롤이면 무시
+      if (isInertialScroll) {
+        return
+      }
+      
+      lastWheelTime.current = now
       scrollAccumulator.current += e.deltaY
       
       if (Math.abs(scrollAccumulator.current) >= threshold) {
@@ -61,13 +81,17 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
         
         scrollAccumulator.current = 0
         
-        // 아이패드 트랙패드 감지: 매우 작은 deltaY 값들
-        const isIPadTrackpad = Math.abs(e.deltaY) < 10
+        // 아이패드 트랙패드의 경우 더 긴 대기 시간
         const waitTime = isIPadTrackpad ? 1200 : 800
         
         setTimeout(() => {
           isScrolling.current = false
         }, waitTime)
+      } else {
+        // 임계값에 도달하지 않았을 때, 일정 시간 후 accumulator 리셋
+        wheelTimeout.current = setTimeout(() => {
+          scrollAccumulator.current = 0
+        }, 200)
       }
     }
 
@@ -75,6 +99,9 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       document.removeEventListener('wheel', handleWheel)
+      if (wheelTimeout.current) {
+        clearTimeout(wheelTimeout.current)
+      }
     }
   }, [emblaApi])
 
