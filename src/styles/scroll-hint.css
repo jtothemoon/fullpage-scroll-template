@@ -17,7 +17,7 @@
 /* Mobile - dot navigator 위에 */
 @media (max-width: 767px) {
   .scroll-hint {
-    bottom: 80px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
   }

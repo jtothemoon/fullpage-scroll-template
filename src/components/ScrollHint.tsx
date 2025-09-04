@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Mouse } from 'lucide-react';
+import { ChevronDown, Mouse, Pointer } from 'lucide-react';
 import { useLanguage } from './contexts';
 import '../styles/scroll-hint.css';
 
@@ -26,9 +26,7 @@ const ScrollHint = ({ isVisible, className = '' }: ScrollHintProps) => {
       {/* 모바일 버전 */}
       <div className="md:hidden flex flex-col items-center justify-center text-gray-600 dark:text-gray-300 animate-bounce">
         <div className="flex flex-col items-center">
-          <div className="w-6 h-10 border-2 border-current rounded-full mb-2 relative">
-            <div className="w-1 h-2 bg-current rounded-full absolute left-1/2 top-2 transform -translate-x-1/2 animate-pulse"></div>
-          </div>
+          <Pointer className="h-6 w-6 mb-2" />
           <p className="text-xs font-medium">{t('scroll.swipe_up')}</p>
         </div>
       </div>
