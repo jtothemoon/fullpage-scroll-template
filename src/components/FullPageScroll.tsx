@@ -140,11 +140,12 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       const endY = e.changedTouches[0].clientY
       const deltaY = touchStart.current.y - endY
       
-      // 터치는 축적 없이 바로 판단
+      // 터치는 축적 없이 바로 판단 - 거리와 상관없이 한 페이지씩만
       if (Math.abs(deltaY) >= threshold) {
         isScrolling.current = true
         scrollCooldown.current = now
         
+        // 방향만 체크해서 항상 한 페이지씩만 이동
         if (deltaY > 0) {
           emblaApi.scrollNext()
         } else {
