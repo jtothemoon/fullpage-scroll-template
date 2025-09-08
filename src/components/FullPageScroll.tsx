@@ -23,6 +23,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
   const scrollAccumulator = useRef(0)
   const lastWheelTime = useRef(0)
   const wheelTimeout = useRef<NodeJS.Timeout | null>(null)
+  const touchTimeout = useRef<NodeJS.Timeout | null>(null)
   const threshold = 70 // 임계값을 낮춰서 더 민감하게 반응
   const scrollCooldown = useRef(0) // 스크롤 쿨다운 관리
   const touchStart = useRef({ y: 0, time: 0 })
@@ -140,6 +141,11 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       const endY = e.changedTouches[0].clientY
       const deltaY = touchStart.current.y - endY
       
+      // 기존 timeout 정리
+      if (touchTimeout.current) {
+        clearTimeout(touchTimeout.current)
+      }
+      
       scrollAccumulator.current += deltaY
       
       if (Math.abs(scrollAccumulator.current) >= threshold) {
@@ -157,6 +163,11 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
         setTimeout(() => {
           isScrolling.current = false
         }, 800)
+      } else {
+        // 임계값에 도달하지 않았을 때, 일정 시간 후 accumulator 리셋
+        touchTimeout.current = setTimeout(() => {
+          scrollAccumulator.current = 0
+        }, 200)
       }
     }
 
@@ -166,6 +177,9 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
     return () => {
       document.removeEventListener('touchstart', handleTouchStart)
       document.removeEventListener('touchend', handleTouchEnd)
+      if (touchTimeout.current) {
+        clearTimeout(touchTimeout.current)
+      }
     }
   }, [emblaApi])
 
