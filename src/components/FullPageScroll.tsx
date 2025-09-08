@@ -25,6 +25,8 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
   const wheelTimeout = useRef<NodeJS.Timeout | null>(null)
   const threshold = 70 // 임계값을 낮춰서 더 민감하게 반응
   const scrollCooldown = useRef(0) // 스크롤 쿨다운 관리
+  const touchStart = useRef({ y: 0, time: 0 })
+  const touchAccumulator = useRef(0)
 
   useEffect(() => {
     if (!emblaApi) return
@@ -115,6 +117,66 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       if (wheelTimeout.current) {
         clearTimeout(wheelTimeout.current)
       }
+    }
+  }, [emblaApi])
+
+  useEffect(() => {
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStart.current = {
+        y: e.touches[0].clientY,
+        time: Date.now()
+      }
+      touchAccumulator.current = 0
+    }
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault()
+      
+      const now = Date.now()
+      
+      // 쿨다운 체크
+      if (now - scrollCooldown.current < 100) {
+        return
+      }
+      
+      if (isScrolling.current || !emblaApi) return
+      
+      const currentY = e.touches[0].clientY
+      const deltaY = touchStart.current.y - currentY
+      
+      touchAccumulator.current += deltaY
+      touchStart.current.y = currentY
+      
+      if (Math.abs(touchAccumulator.current) >= threshold) {
+        isScrolling.current = true
+        scrollCooldown.current = now
+        
+        if (touchAccumulator.current > 0) {
+          emblaApi.scrollNext()
+        } else {
+          emblaApi.scrollPrev()
+        }
+        
+        touchAccumulator.current = 0
+        
+        setTimeout(() => {
+          isScrolling.current = false
+        }, 800)
+      }
+    }
+
+    const handleTouchEnd = () => {
+      touchAccumulator.current = 0
+    }
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: false })
+    document.addEventListener('touchmove', handleTouchMove, { passive: false })
+    document.addEventListener('touchend', handleTouchEnd)
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart)
+      document.removeEventListener('touchmove', handleTouchMove)
+      document.removeEventListener('touchend', handleTouchEnd)
     }
   }, [emblaApi])
 
