@@ -127,6 +127,11 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       }
     }
 
+    const handleTouchMove = (e: TouchEvent) => {
+      // 터치 드래그 중에는 기본 스크롤 동작을 막음
+      e.preventDefault()
+    }
+
     const handleTouchEnd = (e: TouchEvent) => {
       const now = Date.now()
       
@@ -159,10 +164,12 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
     }
 
     document.addEventListener('touchstart', handleTouchStart, { passive: false })
+    document.addEventListener('touchmove', handleTouchMove, { passive: false })
     document.addEventListener('touchend', handleTouchEnd, { passive: false })
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart)
+      document.removeEventListener('touchmove', handleTouchMove)
       document.removeEventListener('touchend', handleTouchEnd)
     }
   }, [emblaApi])
