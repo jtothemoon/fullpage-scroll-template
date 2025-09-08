@@ -16,6 +16,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
     containScroll: 'trimSnaps',
     skipSnaps: false,
     inViewThreshold: 0.7,
+    watchDrag: false, // 드래그 비활성화
   })
   const [currentSlide, setCurrentSlide] = useState(0)
   const [showScrollHint, setShowScrollHint] = useState(true)
