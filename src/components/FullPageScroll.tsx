@@ -56,8 +56,8 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       
       const now = Date.now()
       
-      // 쿨다운 체크 - 거의 즉시
-      if (now - scrollCooldown.current < 10) {
+      // 쿨다운 체크 - 더 부드러운 전환을 위해
+      if (now - scrollCooldown.current < 100) {
         return
       }
       
@@ -72,7 +72,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       
       // 아이패드 트랙패드 관성 스크롤 감지
       const isIPadTrackpad = Math.abs(e.deltaY) < 10
-      const isInertialScroll = isIPadTrackpad && timeDelta > 150
+      const isInertialScroll = isIPadTrackpad && timeDelta > 100
       
       // 관성 스크롤이면 무시
       if (isInertialScroll) {
@@ -94,8 +94,8 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
         
         scrollAccumulator.current = 0
         
-        // fullpage.js 초고속
-        const waitTime = isIPadTrackpad ? 150 : 100
+        // 아이패드 트랙패드의 경우 더 긴 대기 시간
+        const waitTime = isIPadTrackpad ? 1200 : 800
         
         setTimeout(() => {
           isScrolling.current = false
@@ -104,7 +104,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
         // 임계값에 도달하지 않았을 때, 일정 시간 후 accumulator 리셋
         wheelTimeout.current = setTimeout(() => {
           scrollAccumulator.current = 0
-        }, 150)
+        }, 200)
       }
     }
 
@@ -125,7 +125,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       emblaApi.scrollTo(index)
       setTimeout(() => {
         isScrolling.current = false
-      }, 500)
+      }, 800)
     }
   }, [emblaApi])
 
@@ -143,7 +143,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
       
       setTimeout(() => {
         isScrolling.current = false
-      }, 500)
+      }, 800)
     }
   }, [emblaApi])
 
