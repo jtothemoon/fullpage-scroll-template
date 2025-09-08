@@ -204,4 +204,36 @@
   .sticky-header {
     will-change: transform;
   }
+  
+  /* 풀페이지 스크롤 부드러운 전환 */
+  .embla {
+    overflow: hidden;
+  }
+  
+  .embla__container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .embla__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    height: 100vh;
+    transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  /* 스크롤 힌트 부드러운 애니메이션 */
+  .scroll-hint {
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  }
+  
+  /* 도트 네비게이션 부드러운 전환 */
+  .custom-bullet {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  .custom-bullet-active {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
 }
