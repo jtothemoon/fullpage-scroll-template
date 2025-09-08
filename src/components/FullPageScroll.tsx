@@ -23,7 +23,7 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
   const scrollAccumulator = useRef(0)
   const lastWheelTime = useRef(0)
   const wheelTimeout = useRef<NodeJS.Timeout | null>(null)
-  const threshold = 50 // 임계값을 낮춰서 더 민감하게 반응
+  const threshold = 70 // 임계값을 낮춰서 더 민감하게 반응
   const scrollCooldown = useRef(0) // 스크롤 쿨다운 관리
 
   useEffect(() => {
@@ -118,53 +118,6 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
     }
   }, [emblaApi])
 
-  // 키보드 네비게이션 추가
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isScrolling.current || !emblaApi) return
-      
-      switch (e.key) {
-        case 'ArrowDown':
-        case 'PageDown':
-        case ' ': // 스페이스바
-          e.preventDefault()
-          isScrolling.current = true
-          emblaApi.scrollNext()
-          setTimeout(() => {
-            isScrolling.current = false
-          }, 100)
-          break
-        case 'ArrowUp':
-        case 'PageUp':
-          e.preventDefault()
-          isScrolling.current = true
-          emblaApi.scrollPrev()
-          setTimeout(() => {
-            isScrolling.current = false
-          }, 100)
-          break
-        case 'Home':
-          e.preventDefault()
-          isScrolling.current = true
-          emblaApi.scrollTo(0)
-          setTimeout(() => {
-            isScrolling.current = false
-          }, 100)
-          break
-        case 'End':
-          e.preventDefault()
-          isScrolling.current = true
-          emblaApi.scrollTo(emblaApi.scrollSnapList().length - 1)
-          setTimeout(() => {
-            isScrolling.current = false
-          }, 100)
-          break
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [emblaApi])
 
   const handleDotClick = useCallback((index: number) => {
     if (emblaApi && !isScrolling.current) {
@@ -176,52 +129,6 @@ export function FullPageScroll({ children }: { children: React.ReactNode }) {
     }
   }, [emblaApi])
 
-  // 터치 제스처 개선
-  useEffect(() => {
-    let startY = 0
-    let startTime = 0
-    const minSwipeDistance = 50
-    const maxSwipeTime = 300
-
-    const handleTouchStart = (e: TouchEvent) => {
-      startY = e.touches[0].clientY
-      startTime = Date.now()
-    }
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (isScrolling.current || !emblaApi) return
-
-      const endY = e.changedTouches[0].clientY
-      const endTime = Date.now()
-      const deltaY = startY - endY
-      const deltaTime = endTime - startTime
-
-      // 스와이프 거리와 시간 체크
-      if (Math.abs(deltaY) > minSwipeDistance && deltaTime < maxSwipeTime) {
-        isScrolling.current = true
-        
-        if (deltaY > 0) {
-          // 위로 스와이프 - 다음 섹션
-          emblaApi.scrollNext()
-        } else {
-          // 아래로 스와이프 - 이전 섹션
-          emblaApi.scrollPrev()
-        }
-        
-        setTimeout(() => {
-          isScrolling.current = false
-        }, 100)
-      }
-    }
-
-    document.addEventListener('touchstart', handleTouchStart, { passive: true })
-    document.addEventListener('touchend', handleTouchEnd, { passive: true })
-
-    return () => {
-      document.removeEventListener('touchstart', handleTouchStart)
-      document.removeEventListener('touchend', handleTouchEnd)
-    }
-  }, [emblaApi])
 
   const handleScrollToTop = useCallback(() => {
     if (emblaApi && !isScrolling.current) {
